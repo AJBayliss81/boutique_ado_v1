@@ -62,7 +62,7 @@ class OrderLineItem(models.Model):
     order = models.ForeignKey(
         Order, null=False, blank=False, on_delete=models.CASCADE, related_name='lineitems')
     product = models.ForeignKey(
-        Order, null=False, blank=False, on_delete=models.CASCADE)
+        Product, null=False, blank=False, on_delete=models.CASCADE)
     product_size = models.CharField(
         max_length=2, null=True, blank=True) # XS, S, M, L, XL
     quantity = models.IntegerField(null=False, blank=False, default=0)
@@ -70,11 +70,10 @@ class OrderLineItem(models.Model):
         max_digits=6, decimal_places=2, null=False, blank=False)
 
     def save(self, *args, **kwargs):
-        """ Override the original save method to set the order number
-        if it hasn't been set already.
+        """ Override the original save method to set the lineitem total
+        and update the order total.
         """
-        if not self.order_number:
-            self.lineitem_total = self.product.price * self.quantity
+        self.lineitem_total = self.product.price * self.quantity
         super().save(*args, **kwargs)
 
     def __str__(self):
