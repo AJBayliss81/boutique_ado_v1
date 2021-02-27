@@ -1,13 +1,12 @@
 /*
     Core logic/payment flow for this comes from here:
     https://stripe.com/docs/payments/accept-a-payment
-
-    CSS from here:
+    CSS from here: 
     https://stripe.com/docs/stripe-js
 */
 
-var stripePublicKey = $('#id_stripe_public_key').text().slice(1,-1);
-var clientSecret = $('#id_client_secret').text().slice(1,-1);
+var stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
+var clientSecret = $('#id_client_secret').text().slice(1, -1);
 var stripe = Stripe(stripePublicKey);
 var elements = stripe.elements();
 var style = {
@@ -45,7 +44,6 @@ card.addEventListener('change', function (event) {
 });
 
 // Handle form submit
-
 var form = document.getElementById('payment-form');
 
 form.addEventListener('submit', function(ev) {
@@ -65,7 +63,7 @@ form.addEventListener('submit', function(ev) {
     };
     var url = '/checkout/cache_checkout_data/';
 
-    $.post(url, postData).done(function() {
+    $.post(url, postData).done(function () {
         stripe.confirmCardPayment(clientSecret, {
             payment_method: {
                 card: card,
@@ -73,7 +71,7 @@ form.addEventListener('submit', function(ev) {
                     name: $.trim(form.full_name.value),
                     phone: $.trim(form.phone_number.value),
                     email: $.trim(form.email.value),
-                    address: {
+                    address:{
                         line1: $.trim(form.street_address1.value),
                         line2: $.trim(form.street_address2.value),
                         city: $.trim(form.town_or_city.value),
@@ -113,8 +111,8 @@ form.addEventListener('submit', function(ev) {
                 }
             }
         });
-    }).fail(function() {
-        // Reload the page for the error from django messages to be displayed
+    }).fail(function () {
+        // just reload the page, the error will be in django messages
         location.reload();
     })
 });
